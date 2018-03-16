@@ -9,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  title = 'TodoApp';
 
   constructor(
     //Private todoservice will be injected into the component by Angular Dependency Injector
@@ -20,7 +21,6 @@ export class AppComponent implements OnInit {
 
   //An Empty list for the visible todo list
   todosList: ToDo[];
-
 
   ngOnInit(): void {
 
