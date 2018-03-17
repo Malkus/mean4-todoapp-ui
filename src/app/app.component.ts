@@ -21,6 +21,54 @@ export class AppComponent implements OnInit {
 
   //An Empty list for the visible todo list
   todosList: ToDo[];
+  editTodos: ToDo[] = [];
+
+  //This method will get called on Create button event
+  create() {
+    this.todoService.createTodo(this.newTodo)
+      .subscribe((res) => {
+        this.todosList.push(res.data)
+        this.newTodo = new ToDo()
+      })
+  }
+
+  editTodo(todo: ToDo) {
+    if(this.todosList.includes(todo)){
+      if(!this.editTodos.includes(todo)){
+        this.editTodos.push(todo)
+      }else{
+        this.editTodos.splice(this.editTodos.indexOf(todo), 1)
+        this.todoService.editTodo(todo).subscribe(res => {
+          console.log('Update Succesful')
+        }, err => {
+          this.editTodo(todo)
+          console.error('Update Unsuccesful')
+        })
+      }
+    }
+  }
+
+  submitTodo(event, todo:ToDo){
+    if(event.keyCode ==13){
+      this.editTodo(todo)
+    }
+  }
+
+  doneTodo(todo:ToDo){
+    todo.status = 'Done'
+    this.todoService.editTodo(todo).subscribe(res => {
+      console.log('Update Succesful')
+    }, err => {
+      this.editTodo(todo)
+      console.error('Update Unsuccesful')
+    })
+  }
+
+	deleteTodo(todo: ToDo) {
+		this.todoService.deleteTodo(todo._id).subscribe(res => {
+			this.todosList.splice(this.todosList.indexOf(todo), 1);
+		})
+	}
 
   ngOnInit(): void {
 
@@ -29,7 +77,6 @@ export class AppComponent implements OnInit {
       .subscribe(todos => {
         //assign the todolist property to the proper http response
         this.todosList = todos
-        console.log(todos)
       })
   }
 }
